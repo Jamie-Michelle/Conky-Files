@@ -1,0 +1,96 @@
+--[[
+Place this file at '~/.conkyrc'.
+
+Conky ( https://github.com/brndnmtthws/conky ) is a free and open-source Unix-like system monitor for the X Window System (X11) based on Torsmo (TyopoytaORvelo System MOnitor, http://torsmo.sourceforge.net ).
+
+This '.conkyrc' file is a modification of 'conky.conf' (2549 bytes) found at 'conky-1.9.0/data/conky.conf' from conky-1.9.0.tar.bz2 (626555 bytes, MD5: d3de615f43aadc98d555e05ad9e902c2). Said '.conkyrc' file was then converted to the new Lua syntax used since Conky 1.10 via 'conky-1.10.8/extras/convert.lua' with the command *$ ./convert.lua .conkyrc*, of which 'convert.lua' file is from conky-1.10.8.tar.gz (373075 bytes, MD5: b02bc92e4b02d4f18259ab3a26c8c5ba). See also 'conky-1.10.8/data/conky.conf' (2866 bytes) from said conky-1.10.8.tar.gz archive.
+
+Regarding the older versions of Conky (before Conky 1.10), the article "Conky" at ArchWiki (Feb. 24, 2014, 11:48, https://wiki.archlinux.org/index.php/Conky , https://wiki.archlinux.org/index.php?title=Conky&oldid=301502 , https://web.archive.org/web/20140314070341/https://wiki.archlinux.org/index.php/Conky , https://www.webcitation.org/6O3tVCaGI , https://archive.is/E8xwm , https://megalodon.jp/2014-0314-1607-11/wiki.archlinux.org/index.php/Conky ) recommends one expurgate the files in '/etc/conky/' : "Best is to remove files in /etc/conky/, as conky will keep reading them and this can give you some Xorg error messages."
+
+Autostart Conky with *$ bash -c "sleep 45; conky -d"*. The "45" figure in the foregoing command is in seconds. Depending on one's computer system, one may need more time than this in order for Conky to start properly, or one may be able to use a shorter time. *$ man conky* states that *$ conky -d* is "Daemonize Conky, aka fork to background".
+]];
+
+conky.config = {
+-- Note that some of the below comments applied to the old pre-Conky 1.10 style of configurations-file.
+alignment = 'top_right',
+-- The setting "background yes" will fork Conky to one's background.
+background = true,
+border_width = 1,
+cpu_avg_samples = 2,
+default_color = 'white',
+default_outline_color = 'white',
+default_shade_color = 'white',
+draw_borders = false,
+draw_graph_borders = true,
+draw_outline = false,
+draw_shades = false,
+use_xft = true,
+font = 'DejaVu Sans Mono:size=12',
+gap_x = 5,
+-- Without the image file the 'gap_y' would be 60 (when 'gap_y 41'). On 768 vertical pixels screens, 'gap_y' is 47. On 1080 vertical pixels screens, 'gap_y' is 203.
+--gap_y = 47,
+gap_y = 66,
+-- The following minimum_size setting is in width and height of pixels:
+minimum_width = 5, minimum_height = 5,
+maximum_width = 381,
+net_avg_samples = 2,
+no_buffers = true,
+out_to_console = false,
+out_to_stderr = false,
+extra_newline = false,
+own_window = true,
+own_window_transparent = false,
+own_window_argb_visual = true,
+own_window_argb_value = 127,
+own_window_class = 'Conky',
+own_window_type = 'normal',
+own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+stippled_borders = 0,
+update_interval = 1.0,
+uppercase = false,
+use_spacer = 'none',
+show_graph_scale = false,
+show_graph_range = false,
+top_cpu_separate = false,
+-- top_name_width
+double_buffer = true,
+};
+
+conky.text = [[
+#${image $HOME/7f000000-382x618.png -p -1,14}
+${scroll 37 5 ${exec lsb_release -d | cut -f 2} ${exec lsb_release -r | cut -f 2} ${exec lsb_release -c | cut -f 2}, based on Arch Linux}
+#${scroll 37 Foo Linux, based on Quux Linux}
+#${scroll 37 $nodename - $sysname $kernel on $machine}
+$hr
+${color grey}Uptime:$color $uptime
+${color grey}RAM Usage:$color $mem/$memmax, $memperc% ${membar 5}
+${color grey}Swap Usage:$color $swap/$swapmax, $swapperc% ${swapbar 5}
+${color grey}CPU Core 1 Frequency in MHz:$color ${freq 1}
+${color grey}CPU Core 2 Frequency in MHz:$color ${freq 2}
+#${color grey}CPU Frequency in GHz:$color $freq_g
+${color grey}CPU Core 1 Usage:$color ${cpu cpu1}% ${cpubar cpu1 5}
+${color grey}CPU Core 2 Usage:$color ${cpu cpu2}% ${cpubar cpu2 5}
+#${cpugraph 000000 ffffff}
+# Getting the CPU temperature may require that 'lm-sensors' ( https://github.com/lm-sensors/lm-sensors ) be installed. Then run *$ sensors-detect*. See also *$ sensors*. The "hwmon n" command below can range from 0 to 3 on my computer (yours may differ).
+${color grey}CPU Temperature:$color ${hwmon 1 temp 1} deg. C
+${color grey}Processes:$color $processes  ${color grey}Running:$color $running_processes
+${color grey}File Systems:
+ / $color${fs_used /}/${fs_size /}, ${fs_used_perc /}% ${fs_bar 5 /}
+$hr
+${color grey}Networking:
+# To list available network interfaces, run the commands *$ nmcli device status* and/or *$ ip link show*.
+ In/s:$color ${downspeed wlp22s0}  ${color grey}Out/s:$color ${upspeed wlp22s0}
+#${downspeedgraph wlan0 25,180 000000 ff0000} ${alignr}${upspeedgraph wlan0 25,180 000000 00ff00}$color
+#${color grey}Total In:$color ${totaldown wlan0} ${color grey}${alignr}Total Out:$color ${totalup wlan0}
+$hr
+# See also ${top mem_res 1}.
+${color grey}Name              PID   CPU%   Mem%$color
+${color lightgrey} ${top name 1} ${top pid 1} ${top cpu 1} ${top mem 1}
+${color lightgrey} ${top name 2} ${top pid 2} ${top cpu 2} ${top mem 2}
+${color lightgrey} ${top name 3} ${top pid 3} ${top cpu 3} ${top mem 3}
+${color lightgrey} ${top name 4} ${top pid 4} ${top cpu 4} ${top mem 4}$color
+$hr
+# See *$ man date* for the date codes; see also *$ man strftime*. %r = %I:%M:%S %p
+${time %r, %A, %Y-%-m-%-d}
+${color lightgrey}${execpi 120 DOM=`date +%-d`; cal | sed s/"\(^\|[^0-9]\)$DOM"'\b'/'\1${color 00ff00}'"$DOM"'$color'/}$color
+]];
